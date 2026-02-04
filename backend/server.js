@@ -24,7 +24,16 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-app.listen(PORT, () => {
+// Export the app for Vercel serverless functions
+export default app;
+
+// Only listen when running locally (not in Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    connectDB();
+    console.log(`Server is running on port ${PORT}`);
+  });
+} else {
+  // Connect to DB for Vercel environment (cold start)
   connectDB();
-  console.log(`Server is running on port ${PORT}`);
-});
+}
